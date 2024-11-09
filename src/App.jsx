@@ -1,13 +1,18 @@
 import { useEffect, useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 import Conversor from "./Conversor";
+import Usuarios from "./Usuarios";
+import Registro from "./Registro";
 
 function App() {
   const [usuario, setUsuario] = useState("");
   const [clave, setClave] = useState("");
   const [logueado, setLogueado] = useState(false);
+  const [recargar, setRecargar] = useState(false);
+
+  function recargarApp() {
+    setRecargar(!recargar);
+  }
 
   async function ingresar() {
     const peticion = await fetch(
@@ -19,21 +24,14 @@ function App() {
     } else {
       alert("error de ingreso");
     }
-    //if (usuario == "admin" && clave == "1234") {
-    // alert("sesion iniciada");
-    //  setLogueado(true);
-    // } else {
-    //  alert("error de ingreso");
-    // }
   }
 
-  async function validar(){
-    const peticion = await fetch(
-      "http://localhost:3000/validar", { credentials: "include" });
+  async function validar() {
+    const peticion = await fetch("http://localhost:3000/validar", {
+      credentials: "include",
+    });
     if (peticion.ok) {
       setLogueado(true);
-    } else {
-      alert("error de ingreso");
     }
   }
 
@@ -42,7 +40,13 @@ function App() {
   }, []);
 
   if (logueado) {
-    return <Conversor />;
+    return (
+      <>
+        <Registro recargarApp={recargarApp} />
+        <Conversor />
+        <Usuarios recargar={recargar} />
+      </>
+    );
   }
   return (
     <>
